@@ -7,6 +7,9 @@ import java.security.NoSuchAlgorithmException;
 
 import org.apache.commons.codec.digest.DigestUtils;
  
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 
 //Test class
 public class HelloLog {
@@ -29,5 +32,17 @@ public class HelloLog {
      md5Digest.update(password.getBytes());
      byte[] hashValue = md5Digest.digest();
      return hashValue;
+   }
+
+   private static void bad1() {
+     try {
+            // ruleid: java-jwt-hardcoded-secret
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            String token = JWT.create()
+                .withIssuer("auth0")
+                .sign(algorithm);
+        } catch (JWTCreationException exception){
+            //Invalid Signing configuration / Couldn't convert Claims.
+        }
    }
 }
