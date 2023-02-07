@@ -36,14 +36,9 @@ sast-semgrep-app:
   stage: test
   image: openkbs/jdk11-mvn-py3
   script:
-    - python3 --version
-    - mvn --version
     - pip3 install semgrep
-    - export PATH=$PATH:/home/$USER/.local/bin
-    - echo $SEMGREP_APP_TOKEN
-    - echo $PAT
+    - export PATH=$PATH:$HOME/.local/bin
     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
-    - export SEMGREP_REPO_NAME=$SEMGREP_REPO_NAME
     - semgrep ci --verbose
   rules:
     # Scan changed files in MRs, (diff-aware scanning):
