@@ -51,23 +51,43 @@ build-job:       # This job runs in the build stage, which runs first.
 #     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
 #     GITLAB_TOKEN: $PAT
 
+# semgrep-ci-installing-jdk-maven:
+#   stage: test
+#   image: ubuntu
+#   script:
+#     - apt update
+#     - apt install python3 -y
+#     - python3 --version
+#     - apt install python3-pip -y
+#     - pip3 --version
+#     - apt install openjdk-17-jdk -y
+#     - java --version
+#     - apt install maven -y
+#     - mvn --version
+#     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
+#     - pip3 install semgrep
+#     - export PATH=$PATH:$HOME/.local/bin
+#     ## - git is needed too! 
+#     - semgrep ci
+#   rules:
+#     # Scan changed files in MRs, (diff-aware scanning):
+#     - if: $CI_MERGE_REQUEST_IID
+#     # Scan mainline (default) branches and report all findings.
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#   variables:
+#     # Upload findings to GitLab SAST Dashboard:
+#     SEMGREP_GITLAB_JSON: "1"
+#     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
+#     GITLAB_TOKEN: $PAT
+
 semgrep-ci-installing-jdk-maven:
   stage: test
-  image: ubuntu
+  image: returntocorp/semgrep
   script:
-    - apt update
-    - apt install python3 -y
-    - python3 --version
-    - apt install python3-pip -y
-    - pip3 --version
-    - apt install openjdk-17-jdk -y
-    - java --version
-    - apt install maven -y
-    - mvn --version
-    - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
-    - pip3 install semgrep
-    - export PATH=$PATH:$HOME/.local/bin
-    - semgrep ci
+    - cat /etc/os-release
+    - lsb_release -a
+    - hostnamectl
+    - uname -r
   rules:
     # Scan changed files in MRs, (diff-aware scanning):
     - if: $CI_MERGE_REQUEST_IID
@@ -78,4 +98,3 @@ semgrep-ci-installing-jdk-maven:
     SEMGREP_GITLAB_JSON: "1"
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
     GITLAB_TOKEN: $PAT
-
