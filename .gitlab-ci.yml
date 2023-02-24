@@ -86,7 +86,7 @@ semgrep-ci-installing-jdk-maven:
   script:
     - apk add openjdk17
     - java --version
-    - apk add mvn
+    - apk add maven
     - mvn --version
     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
     - semgrep ci 
