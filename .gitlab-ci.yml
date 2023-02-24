@@ -32,14 +32,36 @@ build-job:       # This job runs in the build stage, which runs first.
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 
-sast-semgrep-app:
+# semgrep-ci-with-jdk-mvn-image:
+#   stage: test
+#   image: openkbs/jdk11-mvn-py3
+#   script:
+#     - pip3 install semgrep
+#     - export PATH=$PATH:$HOME/.local/bin
+#     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
+#     - semgrep ci
+#   rules:
+#     # Scan changed files in MRs, (diff-aware scanning):
+#     - if: $CI_MERGE_REQUEST_IID
+#     # Scan mainline (default) branches and report all findings.
+#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+#   variables:
+#     # Upload findings to GitLab SAST Dashboard:
+#     SEMGREP_GITLAB_JSON: "1"
+#     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
+#     GITLAB_TOKEN: $PAT
+
+semgrep-ci-installing-jdk-maven:
   stage: test
-  image: openkbs/jdk11-mvn-py3
+  image: returntocorp/semgrep
   script:
-    - pip3 install semgrep
-    - export PATH=$PATH:$HOME/.local/bin
+    - apt update
+    - apt install openjdk-17-jdk -y
+    - java --version
+    - apt install maven -y
+    - mvn --version
     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
-    - semgrep ci --verbose
+    - semgrep ci
   rules:
     # Scan changed files in MRs, (diff-aware scanning):
     - if: $CI_MERGE_REQUEST_IID
@@ -50,3 +72,4 @@ sast-semgrep-app:
     SEMGREP_GITLAB_JSON: "1"
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
     GITLAB_TOKEN: $PAT
+
