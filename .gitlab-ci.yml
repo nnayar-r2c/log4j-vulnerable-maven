@@ -84,10 +84,12 @@ semgrep-ci-installing-jdk-maven:
   stage: test
   image: returntocorp/semgrep
   script:
-    - cat /etc/os-release
-    - lsb_release -a
-    - hostnamectl
-    - uname -r
+    - apk add openjdk17
+    - java --version
+    - apk add mvn
+    - mvn --version
+    - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
+    - semgrep ci 
   rules:
     # Scan changed files in MRs, (diff-aware scanning):
     - if: $CI_MERGE_REQUEST_IID
