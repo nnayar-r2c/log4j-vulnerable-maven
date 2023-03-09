@@ -102,11 +102,9 @@ semgrep:
     SEMGREP_REPO_NAME: $CI_PROJECT_NAME
     SEMGREP_REPO_URL: $CI_REPOSITORY_URL
     SEMGREP_PR_ID: $CI_MERGE_REQUEST_ID
-    MAVEN_CLI_OPTS: "--settings ${CI_PROJECT_DIR}/settings.xml -DskipTests -DskipITs -Ddependency-check.skip=true -Ddockerfile.skip=true"
   before_script:
     - apk add openjdk17
     - java --version
     - apk add maven
     - mvn --version
-    - mvn clean install $MAVEN_CLI_OPTS
     - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
