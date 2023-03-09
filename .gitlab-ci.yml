@@ -101,7 +101,7 @@ semgrep:
     SEMGREP_BRANCH: $CI_COMMIT_REF_NAME
     SEMGREP_REPO_NAME: $CI_PROJECT_NAME
     SEMGREP_REPO_URL: $CI_REPOSITORY_URL
-    SEMGREP_PR_ID: $CI_MERGE_REQUEST_ID
+    #SEMGREP_PR_ID: $CI_MERGE_REQUEST_ID
   before_script:
     - apk add openjdk17
     - java --version
