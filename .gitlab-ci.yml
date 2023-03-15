@@ -13,41 +13,21 @@ build-job:       # This job runs in the build stage, which runs first.
     # Scan mainline (default) branches and report all findings.
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
-
-# semgrep-ci-installing-jdk-maven:
-#   stage: test
-#   image: returntocorp/semgrep
-#   script:
-#     - free -m | grep -v "Swap" # RAM
-#     - df -h| grep -E "Filesystem|overlay" # storage
-#     - apk add openjdk17
-#     - java --version
-#     - apk add maven
-#     - mvn --version
-#     - mvn dependency:tree -DoutputFile=maven_dep_tree.txt
-#     - semgrep ci --timeout 3 --interfile-timeout 180 --disable-version-check --metrics=off --no-suppress-errors
-#   rules:
-#     # Scan changed files in MRs, (diff-aware scanning):
-#     - if: $CI_MERGE_REQUEST_IID
-#     # Scan mainline (default) branches and report all findings.
-#     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-#   variables:
-#     # Upload findings to GitLab SAST Dashboard:
-#     SEMGREP_GITLAB_JSON: "1"
-#     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
-#     GITLAB_TOKEN: $PAT
-
 semgrep:
   image: returntocorp/semgrep
+  before_script:
+    - apk add openjdk17
+    - java --version
+    - apk add maven
+    - mvn --version
+    - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
   script: semgrep ci
-  stage: build
+  stage: test
   rules:
-    # - changes:
-    #     - .gitlab-ci.yml
-    - if: $CI_PIPELINE_SOURCE == "web"  # allow triggering a scan manually from the gitlab UI
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   variables:
+    GITLAB_TOKEN: $PAT
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
     SEMGREP_JOB_URL: $CI_JOB_URL
     SEMGREP_COMMIT: $CI_COMMIT_SHA
@@ -55,11 +35,3 @@ semgrep:
     SEMGREP_REPO_NAME: $CI_PROJECT_NAME
     SEMGREP_REPO_URL: $CI_REPOSITORY_URL
     SEMGREP_PR_ID: $CI_MERGE_REQUEST_ID
-  before_script:
-    - apk add openjdk17
-    - java --version
-    - apk add maven
-    - mvn --version
-    - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
-    - echo $CI_COMMIT_REF_NAME
-    - echo $CI_MERGE_REQUEST_ID
