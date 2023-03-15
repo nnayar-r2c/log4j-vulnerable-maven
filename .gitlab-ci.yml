@@ -21,7 +21,7 @@ semgrep:
     - apk add maven
     - mvn --version
     - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
-  script: semgrep ci
+  script: semgrep ci --oss-only
   stage: test
   rules:
     - if: $CI_MERGE_REQUEST_IID
