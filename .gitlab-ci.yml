@@ -18,8 +18,6 @@ semgrep:
   script: semgrep ci
   stage: build
   rules:
-    # - changes:
-    #     - .gitlab-ci.yml
     - if: $CI_PIPELINE_SOURCE == "web"  # allow triggering a scan manually from the gitlab UI
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -31,6 +29,7 @@ semgrep:
     SEMGREP_REPO_NAME: $CI_PROJECT_NAME
     SEMGREP_REPO_URL: $CI_REPOSITORY_URL
     SEMGREP_PR_ID: $CI_MERGE_REQUEST_ID
+    GITLAB_TOKEN: $PAT
   before_script:
     - apk add openjdk17
     - java --version
