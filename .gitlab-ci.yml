@@ -15,20 +15,17 @@ build-job:       # This job runs in the build stage, which runs first.
 
 semgrep:
   image: returntocorp/semgrep
-  script: semgrep ci
   stage: build
   rules:
     - if: $CI_PIPELINE_SOURCE == "web"  # allow triggering a scan manually from the gitlab UI
     - if: $CI_MERGE_REQUEST_IID
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  before_script:
+    - apk add openjdk17
+    - apk add maven
+    - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
+  script: semgrep ci
   variables:
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
     GITLAB_TOKEN: $PAT
-  before_script:
-    - apk add openjdk17
-    - java --version
-    - apk add maven
-    - mvn --version
-    - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
-    - echo $CI_COMMIT_REF_NAME
-    - echo $CI_MERGE_REQUEST_ID
+    SEMGREP_REPO_NAME: $SEMGREP_REPO_NAME
