@@ -24,7 +24,7 @@ semgrep:
     - apk add openjdk17
     - apk add maven
     - mvn dependency:tree $MAVEN_CLI_OPTS -DoutputFile=maven_dep_tree.txt
-  script: semgrep ci
+  script: semgrep ci --supply-chain
   variables:
     SEMGREP_APP_TOKEN: $SEMGREP_APP_TOKEN
     GITLAB_TOKEN: $PAT
